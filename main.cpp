@@ -8,7 +8,8 @@ int main (int argc, char* args[])
     auto g_game = new ykf::Game ( );
 
 	if (g_game->init ("YKF")) {
-        SDL_Delay (3000);
+        g_game->animation ( );
+        SDL_Delay (2000);
 	}
 
 	// free resources before exiting
