@@ -1,53 +1,18 @@
-#include <SDL.h>
-#include <iostream>
+#include "game.h"
 
 
-bool loadMedia()
+
+int main (int argc, char* args[])
 {
-	//Loading success flag
-	bool success = true;
+    // a game object
+    auto g_game = new ykf::Game ( );
 
-	//Load splash image
-	gHelloWorld = SDL_LoadBMP( "hello_world.bmp" );
-	if( gHelloWorld == NULL )
-	{
-		printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
-		success = false;
+	if (g_game->init ("YKF")) {
+        SDL_Delay (3000);
 	}
 
-	return success;
-}
+	// free resources before exiting
+	g_game->close ( );
 
-
-int main( int argc, char* args[] )
-{
-	//Start up SDL and create window
-	if( !init() )
-	{
-		printf( "Failed to initialize!\n" );
-	}
-	else
-	{
-		//Load media
-		if( !loadMedia() )
-		{
-			printf( "Failed to load media!\n" );
-		}
-		else
-		{
-			//Apply the image
-			SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
-			
-			//Update the surface
-			SDL_UpdateWindowSurface( gWindow );
-
-			//Wait two seconds
-			SDL_Delay( 2000 );
-		}
-	}
-
-	//Free resources and close SDL
-	close();
-
-	return 0;
+	return EXIT_SUCCESS;
 }
