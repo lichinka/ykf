@@ -10,12 +10,15 @@
 
 namespace ykf {
 
+// one global instance of the texture manager
+static auto theTextureManager = TextureManager ( );
+
 struct Game {
 public:
     // the screen dimensions
     static const int WIDTH  = 320;
-    static const int HEIGHT = 240;
-    static const int ZOOM   = 2.0f;
+    static const int HEIGHT = 200;
+    static const int ZOOM   = 3.0f;
 
     Game ( ) : _closed      (true),
                _initialized (false),
@@ -34,7 +37,7 @@ public:
     void animation ( ) {
         SDL_Rect src_rect;
         SDL_Rect tgt_rect;
-        auto texture = _texture_manager.get ("characters");
+        auto texture = theTextureManager.get ("characters");
 
         src_rect.x =  0; src_rect.y = 4;
         src_rect.w = 16; src_rect.h = 36;
@@ -118,7 +121,9 @@ public:
                     SDL_RenderPresent (_renderer);
 
                     // load textures
-                    _initialized = _load_textures ( );
+                    _initialized = theTextureManager.load ("characters.png",
+                                                           "characters",
+                                                           _renderer);
                     _closed      = !_initialized;
                 } else {
                     SDL_LogError (SDL_LOG_CATEGORY_VIDEO,
@@ -143,18 +148,7 @@ private:
     bool            _closed;
     bool            _initialized;
     SDL_Renderer*   _renderer;
-    TextureManager  _texture_manager;
     SDL_Window*     _window;
-
-
-    /**
-     * Loads game textures
-     */
-    bool _load_textures ( ) {
-        return _texture_manager.load ("characters.png",
-                                      "characters",
-                                      _renderer);
-    }
 };
 
 }

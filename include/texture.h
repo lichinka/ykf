@@ -18,7 +18,11 @@ public:
 
     TextureManager ( ) : DATA_DIR ("data") { }
 
-    ~TextureManager ( ) { }
+    ~TextureManager ( ) {
+        // release all textures
+        for (auto& kv : _texture_map)
+            SDL_DestroyTexture (kv.second);
+    }
 
     /**
      * Loads game textures

@@ -8,10 +8,10 @@ BIN 	 = ykf
 all : $(BIN)
 
 $(BIN) : $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
+	$(CXX) $(CFLAGS) $(LDFLAGS) $< -o $@
 
 %.o : %.cpp
-	$(CC) $(CXXFLAGS) $(INC) -c $< -o $@ $(LDFLAGS) 
+	$(CXX) $(CXXFLAGS) $(INC) -c $< -o $@ $(LDFLAGS) 
 
 clean :
 	rm -rf *.o $(BIN)
