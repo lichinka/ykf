@@ -1,7 +1,7 @@
 CXX      = g++
 CXXFLAGS = -g -O0 -std=c++11 -Wall
 INC		 = -I./include -I/usr/include/SDL2 
-LDFLAGS  = -lstdc++ -lSDL2 -lSDL2_image
+LDFLAGS  = -lm -lstdc++ -lSDL2 -lSDL2_image
 OBJS     = main.o
 BIN 	 = ykf
 

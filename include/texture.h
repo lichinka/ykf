@@ -7,16 +7,14 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>
 
+#include "constants.h"
+
 
 
 namespace ykf {
 
 struct TextureManager {
 public:
-    // directory where textures are found
-    const std::string DATA_DIR;
-
-
     ~TextureManager ( ) {
         // release all textures
         for (auto& kv : _texture_map)
@@ -41,8 +39,7 @@ public:
                std::string   id,
                SDL_Renderer* renderer) {
         auto success  = false;
-        auto img_file = TextureManager::DATA_DIR + '/' +
-                        file_name;
+        auto img_file = DATA_DIR + '/' + file_name;
         auto img_tmp  = IMG_Load (img_file.c_str ( ));
 
         SDL_LogInfo (SDL_LOG_CATEGORY_APPLICATION,
@@ -92,7 +89,7 @@ private:
     std::map<std::string, SDL_Texture*> _texture_map;
 
     // avoid external instantiation of this class
-    TextureManager ( ) : DATA_DIR ("data") { }
+    TextureManager ( ) { }
     TextureManager (TextureManager const&) = delete;
     void operator =(TextureManager const&) = delete;
 };
