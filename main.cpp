@@ -8,7 +8,7 @@ int main (int argc, char* args[])
     auto g_game = new ykf::Game ( );
 
 	if (g_game->init ("YKF")) {
-        g_game->animation ( );
+        g_game->run ( );
         SDL_Delay (2000);
 	}
 

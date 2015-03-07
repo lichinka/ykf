@@ -16,13 +16,23 @@ public:
     // directory where textures are found
     const std::string DATA_DIR;
 
-    TextureManager ( ) : DATA_DIR ("data") { }
 
     ~TextureManager ( ) {
         // release all textures
         for (auto& kv : _texture_map)
             SDL_DestroyTexture (kv.second);
     }
+
+
+    /**
+     * Returns the singleton instance of this class
+     */
+    static TextureManager& Instance ( ) {
+        // instantiated on first use and guaranteed to be destroyed
+        static TextureManager instance;
+        return instance;
+    }
+
 
     /**
      * Loads game textures
@@ -80,6 +90,11 @@ public:
 
 private:
     std::map<std::string, SDL_Texture*> _texture_map;
+
+    // avoid external instantiation of this class
+    TextureManager ( ) : DATA_DIR ("data") { }
+    TextureManager (TextureManager const&) = delete;
+    void operator =(TextureManager const&) = delete;
 };
 
 }

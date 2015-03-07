@@ -1,70 +1,93 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <SDL2/SDL.h>
 
+#include "player.h"
 #include "texture.h"
+#include "constants.h"
+#include "game_object.h"
 
 
 
 namespace ykf {
 
-// one global instance of the texture manager
-static auto theTextureManager = TextureManager ( );
 
 struct Game {
-public:
-    // the screen dimensions
-    static const int WIDTH  = 320;
-    static const int HEIGHT = 200;
-    static const int ZOOM   = 3.0f;
+private:
+    bool            _closed;
+    bool            _initialized;
+    bool            _running;
+    SDL_Renderer*   _renderer;
+    SDL_Window*     _window;
 
-    Game ( ) : _closed      (true),
-               _initialized (false),
-               _renderer    (nullptr),
-               _window      (nullptr) { }
+    // all game objects are kept here
+    std::vector<GameObject*> _objects;
 
-    ~Game ( ) {
-        if (!_closed)
-            close ( );
+
+    /**
+     * Loads game objects
+     */
+    void _load_objects ( ) {
+        auto player = new Player ( );
+
+        player->init ( );
+        _objects.push_back (player);
     }
 
 
     /**
-     * Displays a sprite animation
+     * Handles input events
      */
-    void animation ( ) {
-        SDL_Rect src_rect;
-        SDL_Rect tgt_rect;
-        auto texture = theTextureManager.get ("characters");
+    void _handle_events ( ) {
+        SDL_Event event;
 
-        src_rect.x =  0; src_rect.y = 4;
-        src_rect.w = 16; src_rect.h = 36;
+        if (SDL_PollEvent (&event)) {
+            switch (event.type) {
+                // stop the game
+                case SDL_QUIT:
+                    _running = false;
+                    close ( );
+                    break;
 
-        tgt_rect.x = 30; tgt_rect.y = 100;
-        tgt_rect.w = src_rect.w * Game::ZOOM;
-        tgt_rect.h = src_rect.h * Game::ZOOM;
-        
-        for (int i = 0; i < 30; i ++) {
-            SDL_RenderClear (_renderer);
-
-            SDL_RenderCopyEx (_renderer,
-                              texture,
-                              &src_rect,
-                              &tgt_rect,
-                              0, 0,
-                              SDL_FLIP_HORIZONTAL);
-
-            SDL_RenderPresent (_renderer);
-            if (i % 2 == 0) {
-                src_rect.x  = 0;
-            } else {
-                src_rect.x = 29;
+                default:
+                    break;
             }
-            tgt_rect.x += 10;
-            SDL_Delay (170);
         }
+    }
+
+
+    void _update ( ) {
+        for (auto& go : _objects)
+            go->update ( );
+    }
+
+
+    void _render ( ) {
+        SDL_RenderClear (_renderer);
+
+        for (auto& go : _objects)
+            go->render (_renderer);
+
+        SDL_RenderPresent (_renderer);
+    }
+
+
+public:
+    Game ( ) : _closed      (true),
+               _initialized (false),
+               _running     (false),
+               _renderer    (nullptr),
+               _window      (nullptr) { }
+
+    ~Game ( ) {
+        for (auto& go : _objects)
+            delete (go);
+
+        if (!_closed)
+            close ( );
     }
 
 
@@ -105,8 +128,8 @@ public:
             _window = SDL_CreateWindow (title.c_str(),
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED, 
-                                        Game::WIDTH * Game::ZOOM, 
-                                        Game::HEIGHT * Game::ZOOM,
+                                        WIN_WIDTH  * WIN_ZOOM, 
+                                        WIN_HEIGHT * WIN_ZOOM,
                                         SDL_WINDOW_SHOWN);
             if (_window != nullptr) {
                 // create a renderer over the main window
@@ -121,10 +144,13 @@ public:
                     SDL_RenderPresent (_renderer);
 
                     // load textures
-                    _initialized = theTextureManager.load ("characters.png",
-                                                           "characters",
-                                                           _renderer);
+                    _initialized = TextureManager::Instance ( ).load ("characters.png",
+                                                                      "characters",
+                                                                      _renderer);
                     _closed      = !_initialized;
+
+                    // load game objects
+                    _load_objects ( );
                 } else {
                     SDL_LogError (SDL_LOG_CATEGORY_VIDEO,
                                   "SDL_Error: %s",
@@ -144,11 +170,32 @@ public:
     }
 
 
-private:
-    bool            _closed;
-    bool            _initialized;
-    SDL_Renderer*   _renderer;
-    SDL_Window*     _window;
+    /**
+     * Runs the main game loop
+     */
+    void run ( ) {
+        if (!_running) {
+            _running = true;
+
+            while (_running) {
+                _handle_events ( );
+                _update ( );
+                _render ( );
+
+                // refresh rate at 10 frames/second
+                SDL_Delay (100);
+            }
+        }
+    }
+
+    
+    /**
+     * Pauses the main game loop
+     */
+    void pause ( ) {
+        _running = false;
+    }
 };
 
 }
+
