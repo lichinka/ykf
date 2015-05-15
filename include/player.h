@@ -17,8 +17,6 @@ public:
     void init         ( );
     void handle_event ( );
     void update       ( );
-    void render       (SDL_Renderer* renderer,
-                       SDL_RendererFlip flip=SDL_FLIP_NONE);
 };
 
 
@@ -29,17 +27,17 @@ public:
 void Player::init ( ) {
     _texture_id = "characters";
 
-    // coordinates to extract this player's sprite from the texture map
+    // coordinates to extract the player's sprite from the texture map
     _txt_rect.x = 0;
     _txt_rect.y = 4;
     _txt_rect.w = 16;
     _txt_rect.h = 36;
 
     // coordinates over the rendering plane
-    _rdr_rect.x = 10 * WIN_ZOOM;
-    _rdr_rect.y = 35 * WIN_ZOOM;
-    _rdr_rect.w = _txt_rect.w * WIN_ZOOM;
-    _rdr_rect.h = _txt_rect.h * WIN_ZOOM;
+    _rdr_rect.x = 10;
+    _rdr_rect.y = 35;
+    _rdr_rect.w = _txt_rect.w;
+    _rdr_rect.h = _txt_rect.h;
 
     // initial velocity
     _velocity   = 0.0f;
@@ -50,11 +48,13 @@ void Player::init ( ) {
  * Makes this player react to external events
  */
 void Player::handle_event ( ) {
-    if (InputHandler::Instance ( ).is_key_down (SDL_SCANCODE_RIGHT))
+    if (InputHandler::Instance ( ).is_key_down (SDL_SCANCODE_RIGHT)) {
         _velocity = 2.5f;
-    else if (InputHandler::Instance ( ).is_key_down (SDL_SCANCODE_LEFT))
+        _flip     = SDL_FLIP_HORIZONTAL;
+    } else if (InputHandler::Instance ( ).is_key_down (SDL_SCANCODE_LEFT)) {
         _velocity = -2.5f;
-    else
+        _flip     = SDL_FLIP_NONE;
+    } else
         _velocity = 0.0f;
 }
 
@@ -74,20 +74,7 @@ void Player::update ( ) {
             _txt_rect.x = 0;
     }
     // move the target position
-    _rdr_rect.x += _velocity * WIN_ZOOM;
-}
-
-
-/**
- * Renders this player using the received ``renderer``
- */
-void Player::render (SDL_Renderer* renderer,
-                     SDL_RendererFlip flip) {
-    if (_velocity >= 0)
-        flip = SDL_FLIP_HORIZONTAL;
-
-    GameObject::render (renderer,
-                        (SDL_RendererFlip) flip);
+    _rdr_rect.x += _velocity;
 }
 
 }

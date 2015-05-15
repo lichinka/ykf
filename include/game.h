@@ -195,15 +195,19 @@ void Game::_handle_event ( ) {
             default:
                 break;
         }
+#ifndef NDEBUG
         SDL_LogInfo (SDL_LOG_CATEGORY_APPLICATION,
                      "Event %d",
                      event.type);
+#endif
         // propagate the event to all game objects
         for (auto& go : _objects)
             go->handle_event ( );
     } 
+#ifndef NDEBUG
     SDL_LogInfo (SDL_LOG_CATEGORY_APPLICATION,
                  "No events");
+#endif
 }
 
 
