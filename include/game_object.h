@@ -2,6 +2,7 @@
 
 #include "game.h"
 #include "texture.h"
+#include "vector2d.h"
 
 
 
@@ -29,7 +30,8 @@ protected:
     // flip the rendered texture
     SDL_RendererFlip _flip;
 
-    float            _velocity;
+    Vector2D<float>  _velocity;
+    Vector2D<float>  _acceleration;
 };
 
 

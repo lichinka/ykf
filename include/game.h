@@ -34,8 +34,8 @@ public:
 
     bool close ( );
     bool init  (std::string title);
-    void run   ( );
     void pause ( );
+    void run   ( );
 
 
 private:
@@ -50,8 +50,8 @@ private:
 
     void _load_objects ( );
     void _handle_event ( );
-    void _update       ( );
     void _render       ( );
+    void _update       ( );
 };
 
 
@@ -103,7 +103,7 @@ bool Game::init (std::string title) {
                                             SDL_RENDERER_ACCELERATED);
             if (_renderer != nullptr) {
                 SDL_SetRenderDrawColor (_renderer,
-                                        0, 0, 0, 255); // RGB Alpha
+                                        102, 102, 102, 255); // RGB Alpha
                 // clear the window to black and show it
                 SDL_RenderClear (_renderer);
                 SDL_RenderPresent (_renderer);

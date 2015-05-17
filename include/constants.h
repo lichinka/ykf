@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "vector2d.h"
 
 
 
@@ -18,5 +19,8 @@ static const int DELAY_TIME = 1000.0f / FPS;
 
 // assets are kept in this directory
 static const std::string DATA_DIR = "data";
+
+// acceleration due to gravity
+static const Vector2D<float> GRAVITY (0.0, 0.98);
 
 }
