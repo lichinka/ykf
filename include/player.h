@@ -69,7 +69,7 @@ void Player::handle_event ( ) {
 }
 
 
-/** 
+/**
  * Updates the state of this player
  */
 void Player::update ( ) {

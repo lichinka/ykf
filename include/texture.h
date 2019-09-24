@@ -76,7 +76,7 @@ public:
         try {
             ret_value = _texture_map.at (id);
         }
-        catch (std::out_of_range) {
+        catch (const std::out_of_range &e) {
             SDL_LogWarn (SDL_LOG_CATEGORY_APPLICATION,
                          "No texture with id [%s]",
                          id.c_str ( ));
